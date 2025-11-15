@@ -1,0 +1,132 @@
+<?php include "koneksi.php"; ?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplikasi Keuangan Pribadi - Dark Star</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Poppins, sans-serif;
+        background: #0a0a0f;
+        color: white;
+        overflow-x: hidden;
+    }
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 32px;
+        text-shadow: 0 0 15px #b400ff;
+        animation: glowText 2s infinite alternate;
+    }
+    @keyframes glowText {
+        from { text-shadow: 0 0 10px #ff00dd; }
+        to   { text-shadow: 0 0 25px #ff44dd; }
+    }
+    .container {
+        width: 90%;
+        max-width: 700px;
+        margin: auto;
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px #7700ff;
+    }
+    input, select {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 10px;
+        border: none;
+        font-size: 16px;
+        background: #1d1d27;
+        color: white;
+        box-shadow: 0 0 10px #5500ff;
+    }
+    button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(45deg, #6a00ff, #c200ff);
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 0 15px #9400ff;
+    }
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 12px;
+        background: rgba(255,255,255,0.06);
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    th {
+        background: rgba(255,255,255,0.12);
+    }
+</style>
+</head>
+<body>
+
+<h1>✨ Keuangan Pribadi ✨</h1>
+
+<div class="container">
+    <h2>Tambah Transaksi</h2>
+
+    <form action="simpan.php" method="POST">
+        <select name="jenis">
+            <option value="pemasukan">Pemasukan</option>
+            <option value="pengeluaran">Pengeluaran</option>
+        </select>
+
+        <input type="number" name="jumlah" placeholder="Masukkan jumlah" required>
+        <input type="text" name="keterangan" placeholder="Keterangan">
+        <input type="date" name="tanggal" required>
+
+        <button type="submit">Simpan</button>
+    </form>
+
+    <h2 style="margin-top:30px;">Histori Transaksi</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Jenis</th>
+                <th>Jumlah</th>
+                <th>Keterangan</th>
+                <th>Tanggal</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php
+            $result = mysqli_query($conn, "SELECT * FROM transaksi ORDER BY id DESC");
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "
+                <tr>
+                    <td>{$row['jenis']}</td>
+                    <td>Rp " . number_format($row['jumlah'], 0, ',', '.') . "</td>
+                    <td>{$row['keterangan']}</td>
+                    <td>{$row['tanggal']}</td>
+                    <td>
+                        <a href='hapus.php?id={$row['id']}' style='color:red;'>Hapus</a>
+                    </td>
+                </tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
